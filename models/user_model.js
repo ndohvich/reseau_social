@@ -45,3 +45,24 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
 }
 );
+
+userSchema.pre("Enregistrer", async function(next) {
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
+
+userSchema.statics.login = async function(email, password){
+    const user = await this.findOne({ email });$
+    if(user){
+        const auth = await bcrypt.compare(password, user.password);
+        if(auth){
+            return user;
+        }
+        throw Error('Mot de passe Incorrect');
+    }
+    throw Error('Email Incorrecte');
+};
+
+const UserModel = mongoose.model("user", userSchema);
+module.exports = UserModel;
