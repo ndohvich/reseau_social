@@ -32,7 +32,7 @@ module.exports.signIn = async(req, res) => {
     }
     catch(err){
          const errors = signInErrors(err);
-         res.status(200).send(errors);
+         res.status(200).json({errors});
     }
 }
 
